@@ -2,7 +2,7 @@ import os
 
 from fastapi import FastAPI
 
-VERSION = "1.0.0"
+VERSION = "2.0.0"
 
 app = FastAPI(title="cicd-autonomy-demo")
 
@@ -13,7 +13,13 @@ def root() -> dict:
         "service": "cicd-autonomy-demo",
         "version": VERSION,
         "environment": os.getenv("APP_ENV", "unknown"),
+        "features": ["greeting"],
     }
+
+
+@app.get("/greet")
+def greet() -> dict:
+    return {"greeting": "Hello from v2!"}
 
 
 @app.get("/health")

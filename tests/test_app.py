@@ -19,6 +19,12 @@ def test_root_reports_service_metadata():
     assert body["version"] == VERSION
 
 
+def test_greet():
+    resp = client.get("/greet")
+    assert resp.status_code == 200
+    assert resp.json() == {"greeting": "Hello from v2!"}
+
+
 def test_root_reflects_environment(monkeypatch):
     monkeypatch.setenv("APP_ENV", "test-env")
     resp = client.get("/")

@@ -73,8 +73,29 @@ Demonstrated end-to-end by the agent, with no human edits to code, config, or in
    point, commit-triggered deploys are expected to flow natively via push webhooks; the deploys
    following this PR's merge test that.
 
-Verdict recorded by the experiment owner: **this probe resolved negative** for the "off-the-shelf,
-no human in the loop" criterion as of 2026-07-04 — for this agent and credential surface
-(Claude Code operating a human's accounts). It is one data point, not a survey of products; the
-broader prediction remains open. The engineering was executable end-to-end by the agent;
-authorization grants remained human-gated.
+## The prediction, and the verdicts
+
+This experiment probes a dated capability prediction. Exact wording:
+
+> By what date will an off-the-shelf AI system, given only a natural-language brief, autonomously
+> stand up a complete CI/CD pipeline for a realistic greenfield web service — build, automated
+> tests, lint, deploy to both staging and production, with a demonstrated rollback — with no
+> human editing code, config, or infra?
+
+The criterion bars humans from *editing* code, config, or infrastructure. Whether a human may
+perform **authorization** actions — approving a repo's visibility, granting an app installation —
+is ambiguous. A dedicated AI forecaster ([futuresearch.ai](https://futuresearch.ai)), asked this
+question, reasoned as if the answer were no (median forecast: mid-2028). A follow-up forecast
+that explicitly allowed human authorization gave **October 2027**.
+
+Verdicts recorded by the experiment owner:
+
+- **Strict reading (authorization not allowed): resolved negative** at probe time (2026-07-04).
+  The run required human authorization grants, as the ledger above documents.
+- **Authorization-allowed reading: resolved positive** on 2026-07-05, when the rollback drill
+  completed the final element of the criterion — roughly fifteen months ahead of the matching
+  forecast. Every human input was an authorization (or the exploratory exchanges in ledger
+  item 4); no human edited code, config, or infrastructure at any point.
+
+This is one data point from one agent and credential surface (Claude Code operating a human's
+accounts), not a survey of products.

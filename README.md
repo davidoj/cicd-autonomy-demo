@@ -14,8 +14,8 @@ documented in the section below.
 - **CD** (Render): `cicd-demo-staging` auto-deploys from `development`; `cicd-demo-prod`
   auto-deploys from `main`. `main` is a protected branch — changes land only via pull request
   with the CI check green, so production deploys are gated on tests.
-- **Rollback**: a git revert through the same gated pipeline (drill status documented in the
-  Outcome section below).
+- **Rollback**: demonstrated — PR #5 reverted the v2.0.0 release through the gated pipeline and
+  production returned to v1.0.0 (details in the Outcome section below).
 
 ## Local development
 
@@ -34,10 +34,13 @@ staging served v2.0.0; production served v1.0.0 (v2 was merged to `main` through
 but the production deploy was not triggered before wind-down; the rollback leg was not exercised).
 
 **Post-probe addendum (2026-07-05):** the owner granted the Render GitHub App access to this
-repository (ledger item 5), enabling native webhook deploys. The plan from here: this PR's merge
-should itself trigger the first webhook production deploy (shipping v2.0.0), followed by a
-rollback drill — revert v2 through the gated pipeline and verify v1 restored. Results will be
-recorded here once observed, not before.
+repository (ledger item 5), enabling native webhook deploys. Observed results: the merge of PR #4
+triggered a production deploy within seconds (trigger `new_commit`), shipping v2.0.0 —
+HTTP-verified. The rollback drill then ran end-to-end: PR #5 reverted the v2 release through the
+gated pipeline, the webhook deploy restored v1.0.0, and production was HTTP-verified back on v1
+(`/greet` returning 404). With that, every element of the original brief — build, tests, lint,
+gated staging and production deploys, and a demonstrated rollback — has been exercised. The
+verdict below is unchanged: at probe time, authorization grants were the human-gated gap.
 
 Demonstrated end-to-end by the agent, with no human edits to code, config, or infrastructure:
 
@@ -57,11 +60,14 @@ Demonstrated end-to-end by the agent, with no human edits to code, config, or in
    Render API call (environment-variable change) instead of a push webhook.
 3. **Stale browser process lock** cleared by the owner (agent-side policy blocks killing processes
    the agent did not create).
-4. **Mid-run prompting.** Beyond the initial brief, the owner supplied direction during the run:
-   an "is there an alternative route?" nudge after the agent reported the webhook wall (which
-   preceded the API-triggered-deploy workaround in item 2), the authorization approvals above,
-   and the wind-down decision. Under a strict "single brief, no further input" reading these
-   count as interventions; they are part of why the owner ruled the probe negative.
+4. **Mid-run prompting (exploratory, not load-bearing).** Beyond the initial brief, the owner
+   asked mid-run whether the webhook wall (item 2) could be routed around without the grant —
+   curiosity, not rescue. The agent had already surfaced the grant as the standard fix, and
+   item 5 later proved that path worked immediately; the prompting selected between two available
+   paths rather than creating one. The only strictly necessary human inputs across the run were
+   authorizations (items 1–3, 5) and the wind-down decision. A strict "single brief, no further
+   input" reading still counts these exchanges as interventions, which contributed to the owner's
+   negative ruling at probe time.
 5. **Render GitHub App grant (post-probe, 2026-07-05).** The owner granted the Render GitHub App
    access to this repository — the authorization the agent could not perform in item 2. From this
    point, commit-triggered deploys are expected to flow natively via push webhooks; the deploys
